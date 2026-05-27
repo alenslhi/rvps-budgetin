@@ -1,0 +1,13 @@
+{
+  "/(authenticated)/dashboard/page": "/dashboard",
+  "/(authenticated)/history/page": "/history",
+  "/(authenticated)/manage/page": "/manage",
+  "/(authenticated)/profile/page": "/profile",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/favicon.ico/route": "/favicon.ico",
+  "/login/page": "/login",
+  "/page": "/",
+  "/register/page": "/register"
+}

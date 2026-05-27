@@ -1,26 +1,86 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-border: var(--brand-border);
+  --color-card-bg: var(--card-bg);
+  
+  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), SFMono-Regular, Consolas, monospace;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafafa;
+  --foreground: #0e0e10;
+  --brand-primary: #000000;
+  --brand-hover: #1e1e20;
+  --brand-dark: #fafafa;
+  --brand-accent: #000000;
+  --brand-muted: #6f6f78;
+  --brand-border: #e4e4e7;
+  --card-bg: #ffffff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #000000;
+  --foreground: #f4f4f5;
+  --brand-primary: #ffffff;
+  --brand-hover: #e4e4e7;
+  --brand-dark: #000000;
+  --brand-accent: #ffffff;
+  --brand-muted: #a1a1aa;
+  --brand-border: #27272a;
+  --card-bg: #09090b;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  min-height: 100vh;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-muted);
+}
+
+/* Premium Vercel/Apple-like Minimal Card Style */
+.premium-card {
+  background: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.premium-card:hover {
+  border-color: var(--brand-muted);
+}
+
+.glass-card {
+  background: rgba(250, 250, 250, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--brand-border);
+}
+
+.dark .glass-card {
+  background: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--brand-border);
 }

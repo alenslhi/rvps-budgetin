@@ -1,0 +1,13 @@
+{
+  "/(authenticated)/dashboard/page": "app/(authenticated)/dashboard/page.js",
+  "/(authenticated)/history/page": "app/(authenticated)/history/page.js",
+  "/(authenticated)/manage/page": "app/(authenticated)/manage/page.js",
+  "/(authenticated)/profile/page": "app/(authenticated)/profile/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/register/page": "app/register/page.js"
+}

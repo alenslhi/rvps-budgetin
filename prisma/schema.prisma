@@ -1,0 +1,60 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  password      String
+  categories    Category[]
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Category {
+  id           String        @id @default(cuid())
+  userId       String        @map("user_id")
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  budgetLimit  Decimal       @map("budget_limit") @db.Decimal(15, 2)
+  subcategories Subcategory[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@map("categories")
+}
+
+model Subcategory {
+  id           String        @id @default(cuid())
+  categoryId   String        @map("category_id")
+  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name         String
+  budgetLimit  Decimal       @map("budget_limit") @db.Decimal(15, 2)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@map("subcategories")
+}
+
+model Transaction {
+  id            String      @id @default(cuid())
+  subcategoryId String      @map("subcategory_id")
+  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  description   String      @default("-")
+  amount        Decimal     @db.Decimal(15, 2)
+  date          DateTime    @db.Date
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@index([date])
+  @@map("transactions")
+}
