@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import TransactionForm from "@/components/TransactionForm";
 
+
 interface DashboardPageProps {
   searchParams: Promise<{
     month?: string;
@@ -27,7 +28,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const endDate = new Date(new Date(startDate).setMonth(startDate.getMonth() + 1));
 
   const categories = await prisma.category.findMany({
-    where: { userId: session.user.id },
+    where: {
+      userId: session.user.id,
+      month: parseInt(month, 10),
+      year: parseInt(year, 10),
+    },
     include: {
       subcategories: {
         include: {
@@ -92,7 +97,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const totalSisaKapsul = formattedCategories.reduce((sum, cat) => sum + cat.remainingBalance, 0);
 
   return (
-    <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-transparent relative z-10">
+    <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-transparent pb-32 md:pb-8 relative z-10">
       <div className="p-4 lg:p-8 w-full max-w-7xl mx-auto">
         {/* Welcome & Sisa Kapsul Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 mb-8">
@@ -113,6 +118,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             </p>
           </div>
         </div>
+
+
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           

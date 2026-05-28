@@ -72,11 +72,18 @@ export async function createCategory(prevState: any, formData: FormData) {
       budgetLimit: formData.get("budget_limit"),
     });
 
+    const monthStr = formData.get("month")?.toString();
+    const yearStr = formData.get("year")?.toString();
+    const month = monthStr ? parseInt(monthStr, 10) : new Date().getMonth() + 1;
+    const year = yearStr ? parseInt(yearStr, 10) : new Date().getFullYear();
+
     await prisma.category.create({
       data: {
         userId: user.id,
         name: validatedData.name,
         budgetLimit: validatedData.budgetLimit,
+        month,
+        year,
       },
     });
 
@@ -336,6 +343,80 @@ export async function updateBulk(data: {
     return { success: true, message: "Semua perubahan berhasil disimpan serentak!" };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Gagal menyimpan perubahan massal";
+    return { success: false, error: message };
+  }
+}
+
+// 9. COPY CATEGORIES FROM PREVIOUS MONTH (CARRY OVER)
+export async function copyCategoriesFromPreviousMonth(targetMonthStr: string, targetYearStr: string) {
+  try {
+    const user = await getAuthenticatedUser();
+    const targetMonth = parseInt(targetMonthStr, 10);
+    const targetYear = parseInt(targetYearStr, 10);
+
+    // Calculate previous month and year
+    let prevMonth = targetMonth - 1;
+    let prevYear = targetYear;
+    if (prevMonth === 0) {
+      prevMonth = 12;
+      prevYear = targetYear - 1;
+    }
+
+    // Fetch categories from previous month
+    const prevCategories = await prisma.category.findMany({
+      where: {
+        userId: user.id,
+        month: prevMonth,
+        year: prevYear,
+      },
+      include: {
+        subcategories: true,
+      },
+    });
+
+    if (prevCategories.length === 0) {
+      return { success: false, error: "Tidak ada kategori bulan lalu yang bisa disalin" };
+    }
+
+    // Check if there are already categories in the target month
+    const targetCount = await prisma.category.count({
+      where: {
+        userId: user.id,
+        month: targetMonth,
+        year: targetYear,
+      },
+    });
+
+    if (targetCount > 0) {
+      return { success: false, error: "Bulan ini sudah memiliki kategori. Hapus kategori saat ini terlebih dahulu untuk melakukan carry over." };
+    }
+
+    // Copy using transaction
+    await prisma.$transaction(async (tx) => {
+      for (const cat of prevCategories) {
+        await tx.category.create({
+          data: {
+            userId: user.id,
+            name: cat.name,
+            budgetLimit: cat.budgetLimit,
+            month: targetMonth,
+            year: targetYear,
+            subcategories: {
+              create: cat.subcategories.map(sub => ({
+                name: sub.name,
+                budgetLimit: sub.budgetLimit,
+              })),
+            },
+          },
+        });
+      }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/manage");
+    return { success: true, message: "Kategori dan sekat berhasil disalin dari bulan lalu!" };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Gagal menyalin kategori";
     return { success: false, error: message };
   }
 }

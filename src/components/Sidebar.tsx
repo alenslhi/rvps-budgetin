@@ -63,7 +63,7 @@ export default function Sidebar({ user }: SidebarProps) {
         {/* Left side: Brand Title */}
         <div className="flex items-center">
           <Link href="/dashboard" className="text-base font-extrabold text-brand-primary tracking-tighter">
-            spend<span className="text-brand-muted font-normal">ora</span>
+            budget<span className="text-brand-muted font-normal">In</span>
           </Link>
         </div>
 

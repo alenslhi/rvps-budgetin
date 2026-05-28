@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { updateProfile, updatePassword, deleteAccount } from "@/lib/profileActions";
 import { signOut } from "next-auth/react";
-import { Save, ShieldAlert, KeyRound, UserRound, Check, Info } from "lucide-react";
+import { Save, ShieldAlert, KeyRound, UserRound, Check, Info, Eye, EyeOff } from "lucide-react";
 
 interface ProfileFormsProps {
   user: {
@@ -28,6 +28,10 @@ export default function ProfileForms({ user }: ProfileFormsProps) {
   const [deleteMsg, setDeleteMsg] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showDeleteConfirmPassword, setShowDeleteConfirmPassword] = useState(false);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -221,28 +225,54 @@ export default function ProfileForms({ user }: ProfileFormsProps) {
           <form onSubmit={handleUpdatePassword} className="space-y-4">
             <div>
               <label className="block text-xs font-bold opacity-80 mb-1.5">Kata Sandi Saat Ini</label>
-              <input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-transparent border border-brand-border rounded-lg p-2.5 text-xs focus:outline-none focus:border-brand-primary font-semibold transition-colors"
-                required
-                disabled={passwordLoading}
-              />
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-transparent border border-brand-border rounded-lg pl-2.5 pr-9 py-2.5 text-xs focus:outline-none focus:border-brand-primary font-semibold transition-colors"
+                  required
+                  disabled={passwordLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-muted hover:text-brand-primary focus:outline-none transition-colors cursor-pointer"
+                >
+                  {showCurrentPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold opacity-80 mb-1.5">Kata Sandi Baru</label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimal 8 karakter"
-                className="w-full bg-transparent border border-brand-border rounded-lg p-2.5 text-xs focus:outline-none focus:border-brand-primary font-semibold transition-colors"
-                required
-                disabled={passwordLoading}
-              />
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Minimal 8 karakter"
+                  className="w-full bg-transparent border border-brand-border rounded-lg pl-2.5 pr-9 py-2.5 text-xs focus:outline-none focus:border-brand-primary font-semibold transition-colors"
+                  required
+                  disabled={passwordLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-muted hover:text-brand-primary focus:outline-none transition-colors cursor-pointer"
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <button
@@ -291,16 +321,27 @@ export default function ProfileForms({ user }: ProfileFormsProps) {
               )}
 
               <form onSubmit={handleDeleteAccount} className="space-y-4">
-                <div>
+                <div className="relative">
                   <input
-                    type="password"
+                    type={showDeleteConfirmPassword ? "text" : "password"}
                     value={deleteConfirmPassword}
                     onChange={(e) => setDeleteConfirmPassword(e.target.value)}
                     placeholder="Masukkan password Anda..."
-                    className="w-full bg-transparent border border-red-500/20 rounded-lg p-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold transition-colors"
+                    className="w-full bg-transparent border border-red-500/20 rounded-lg pl-2.5 pr-9 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold transition-colors"
                     required
                     disabled={deleteLoading}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirmPassword(!showDeleteConfirmPassword)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-red-500/70 hover:text-red-500 focus:outline-none transition-colors cursor-pointer"
+                  >
+                    {showDeleteConfirmPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
 
                 <div className="flex gap-2">

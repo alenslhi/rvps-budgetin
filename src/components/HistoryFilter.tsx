@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 interface HistoryFilterProps {
   currentMonth: string;
   currentYear: string;
+  targetPath?: string;
 }
 
-export default function HistoryFilter({ currentMonth, currentYear }: HistoryFilterProps) {
+export default function HistoryFilter({ currentMonth, currentYear, targetPath }: HistoryFilterProps) {
   const router = useRouter();
   const [month, setMonth] = useState(currentMonth);
   const [year, setYear] = useState(currentYear);
@@ -33,7 +34,8 @@ export default function HistoryFilter({ currentMonth, currentYear }: HistoryFilt
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/history?month=${month}&year=${year}`);
+    const path = targetPath || "/history";
+    router.push(`${path}?month=${month}&year=${year}`);
   };
 
   return (

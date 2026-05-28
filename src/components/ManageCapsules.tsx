@@ -7,16 +7,26 @@ import {
   createSubcategory,
   deleteSubcategory,
   updateBulk,
+  copyCategoriesFromPreviousMonth,
 } from "@/lib/actions";
-import { Trash2, Save, Info, Check, AlertTriangle } from "lucide-react";
+import { Trash2, Save, Info, Check, AlertTriangle, Copy } from "lucide-react";
+
+import { useRouter } from "next/navigation";
 
 import { Category } from "@/types";
 
 interface ManageCapsulesProps {
   initialCategories: Category[];
+  currentMonth: string;
+  currentYear: string;
 }
 
-export default function ManageCapsules({ initialCategories }: ManageCapsulesProps) {
+export default function ManageCapsules({
+  initialCategories,
+  currentMonth,
+  currentYear,
+}: ManageCapsulesProps) {
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   
   const [editedCategories, setEditedCategories] = useState<Record<string, { name: string; budgetLimit: number }>>({});
@@ -122,6 +132,7 @@ export default function ManageCapsules({ initialCategories }: ManageCapsulesProp
         setMessage({ type: "success", text: res.message || "Semua perubahan berhasil disimpan serentak!" });
         setEditedCategories({});
         setEditedSubcategories({});
+        router.refresh();
       } else {
         setMessage({ type: "error", text: res.error || "Gagal menyimpan perubahan massal" });
       }
@@ -143,6 +154,7 @@ export default function ManageCapsules({ initialCategories }: ManageCapsulesProp
           const newEditedCats = { ...editedCategories };
           delete newEditedCats[id];
           setEditedCategories(newEditedCats);
+          router.refresh();
         } else {
           setMessage({ type: "error", text: res.error || "Gagal menghapus Kapsul" });
         }
@@ -165,6 +177,7 @@ export default function ManageCapsules({ initialCategories }: ManageCapsulesProp
           const newEditedSubs = { ...editedSubcategories };
           delete newEditedSubs[id];
           setEditedSubcategories(newEditedSubs);
+          router.refresh();
         } else {
           setMessage({ type: "error", text: res.error || "Gagal menghapus kebutuhan" });
         }
@@ -185,6 +198,8 @@ export default function ManageCapsules({ initialCategories }: ManageCapsulesProp
 
   return (
     <div className="space-y-6 pb-20">
+
+
       {/* Alert Banner */}
       {message && (
         <div
@@ -199,6 +214,50 @@ export default function ManageCapsules({ initialCategories }: ManageCapsulesProp
         </div>
       )}
 
+      {/* Carry Over Card when budget is empty */}
+      {categories.length === 0 && (
+        <div className="premium-card p-6 flex flex-col items-center text-center space-y-4 border border-brand-primary/20 bg-brand-primary/[0.02]">
+          <div className="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+            <Copy className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-extrabold text-sm text-brand-primary tracking-tighter">
+              Belum Ada Anggaran di Bulan Ini
+            </h4>
+            <p className="text-xs text-brand-muted mt-1 max-w-md font-semibold leading-relaxed">
+              Anda belum menyusun Kapsul Utama & Sekat Kebutuhan untuk periode bulan ini. 
+              Anda bisa membuatnya satu per satu menggunakan form di bawah, atau menyalin seluruh struktur anggaran dari bulan sebelumnya (Carry Over).
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              setLoading(true);
+              setMessage(null);
+              try {
+                const res = await copyCategoriesFromPreviousMonth(currentMonth, currentYear);
+                if (res.success) {
+                  setMessage({ type: "success", text: res.message || "" });
+                  router.refresh();
+                } else {
+                  setMessage({ type: "error", text: res.error || "" });
+                }
+              } catch (err: unknown) {
+                const msg = err instanceof Error ? err.message : "Terjadi kesalahan";
+                setMessage({ type: "error", text: msg });
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+            className="bg-brand-primary hover:bg-brand-hover text-brand-dark px-5 py-2.5 rounded-lg font-extrabold text-xs transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            <Copy className="w-4 h-4" />
+            {loading ? "Menyalin..." : "Salin Kapsul & Sekat Bulan Lalu (Carry Over)"}
+          </button>
+        </div>
+      )}
+
       {/* 1. Add New Category */}
       <div className="premium-card p-6">
         <h3 className="font-extrabold text-sm mb-4 text-brand-primary tracking-tighter">
@@ -208,11 +267,16 @@ export default function ManageCapsules({ initialCategories }: ManageCapsulesProp
           action={async (formData) => {
             setLoading(true);
             setMessage(null);
+            // Include target month and year
+            formData.append("month", currentMonth);
+            formData.append("year", currentYear);
+            
             const res = await createCategory(null, formData);
             if (res.success) {
               setMessage({ type: "success", text: res.message || "" });
               const form = document.getElementById("create-cat-form") as HTMLFormElement;
               form?.reset();
+              router.refresh();
             } else {
               setMessage({ type: "error", text: res.error || "" });
             }
@@ -336,6 +400,7 @@ export default function ManageCapsules({ initialCategories }: ManageCapsulesProp
                   if (res.success) {
                     setMessage({ type: "success", text: res.message || "" });
                     targetForm.reset();
+                    router.refresh();
                   } else {
                     setMessage({ type: "error", text: res.error || "" });
                   }

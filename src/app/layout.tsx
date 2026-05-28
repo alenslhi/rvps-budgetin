@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Spendora - Personal Finance",
-  description: "Spendora merupakan aplikasi manajemen keuangan pribadi yang dirancang untuk membantu pengguna dalam mencatat, memantau, dan mengelola kondisi finansial secara efektif.",
+  title: "BudgetIn - Personal Finance",
+  description: "BudgetIn merupakan aplikasi manajemen keuangan pribadi yang dirancang untuk membantu pengguna dalam mencatat, memantau, dan mengelola kondisi finansial secara efektif.",
 };
 
 export default function RootLayout({

@@ -5,16 +5,31 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ManageCapsules from "@/components/ManageCapsules";
 
-export default async function ManagePage() {
+interface ManagePageProps {
+  searchParams: Promise<{
+    month?: string;
+    year?: string;
+  }>;
+}
+
+export default async function ManagePage({ searchParams }: ManagePageProps) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     redirect("/login");
   }
 
-  // Fetch all categories and subcategories for the user
+  const resolvedSearchParams = await searchParams;
+  const month = resolvedSearchParams.month || (new Date().getMonth() + 1).toString().padStart(2, "0");
+  const year = resolvedSearchParams.year || new Date().getFullYear().toString();
+
+  // Fetch categories and subcategories for the user in the selected month and year
   const categories = await prisma.category.findMany({
-    where: { userId: session.user.id },
+    where: {
+      userId: session.user.id,
+      month: parseInt(month, 10),
+      year: parseInt(year, 10),
+    },
     include: {
       subcategories: true,
     },
@@ -48,7 +63,11 @@ export default async function ManagePage() {
           </p>
         </div>
 
-        <ManageCapsules initialCategories={formattedCategories} />
+        <ManageCapsules
+          initialCategories={formattedCategories}
+          currentMonth={month}
+          currentYear={year}
+        />
       </div>
     </main>
   );
