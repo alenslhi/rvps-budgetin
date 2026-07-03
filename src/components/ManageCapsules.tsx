@@ -489,8 +489,8 @@ export default function ManageCapsules({
         })}
       </div>
 
-      {/* Floating Save Button - Sticky (melayang murni tanpa bar) */}
-      <div className="sticky bottom-24 md:bottom-12 z-[99999] mt-8 flex flex-col items-end gap-3 pointer-events-none -mx-4 lg:-mx-8 px-4 lg:px-8">
+      {/* Floating Save Button - Melayang murni tanpa memakan tempat */}
+      <div className="fixed bottom-24 right-4 md:bottom-12 md:right-8 z-[99999] flex flex-col items-end gap-3 pointer-events-none">
         {/* Error Tooltip */}
         {hasLimitError && (
           <div className="bg-red-500 text-white px-4 py-2.5 rounded-xl shadow-xl text-xs font-bold flex items-center gap-2 pointer-events-auto max-w-[250px] animate-bounce">
