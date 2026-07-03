@@ -52,8 +52,8 @@ export default async function ManagePage({ searchParams }: ManagePageProps) {
   }));
 
   return (
-    <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-transparent pb-28 relative z-10">
-      <div className="p-4 lg:p-8 w-full max-w-5xl mx-auto">
+    <main className="flex-1 flex flex-col overflow-y-auto bg-transparent pb-36 md:pb-20 relative z-10">
+      <div className="p-4 lg:p-8 w-full max-w-5xl mx-auto flex-1">
         <div className="mb-6">
           <h2 className="text-xl font-extrabold text-brand-primary tracking-tighter mb-1">
             Pengaturan Kapsul

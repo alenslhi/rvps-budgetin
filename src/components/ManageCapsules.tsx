@@ -197,7 +197,7 @@ export default function ManageCapsules({
   });
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-4">
 
 
       {/* Alert Banner */}
@@ -489,14 +489,14 @@ export default function ManageCapsules({
         })}
       </div>
 
-      {/* Floating Save Actions Bar at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-card-bg/85 backdrop-blur-md border-t border-brand-border z-20">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-red-500 text-xs font-bold">
+      {/* Floating Save Actions Bar - Melayang mengikuti scroll */}
+      <div className="fixed bottom-24 md:bottom-8 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[600px] p-4 bg-card-bg/95 backdrop-blur-xl border border-brand-border shadow-2xl rounded-2xl z-[99999]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-red-500 text-xs font-bold text-center sm:text-left">
             {hasLimitError && (
               <>
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>Alokasi sekat melebihi limit Kapsul Utama! Perbaiki sebelum menyimpan.</span>
+                <AlertTriangle className="w-5 h-5 shrink-0 mx-auto sm:mx-0" />
+                <span>Alokasi sekat melebihi limit Kapsul Utama!</span>
               </>
             )}
           </div>
@@ -504,9 +504,9 @@ export default function ManageCapsules({
           <button
             onClick={handleSaveBulk}
             disabled={loading || hasLimitError || (Object.keys(editedCategories).length === 0 && Object.keys(editedSubcategories).length === 0)}
-            className="bg-brand-primary hover:bg-brand-hover text-brand-dark font-extrabold py-2.5 px-6 rounded-lg text-xs transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="bg-brand-primary hover:bg-brand-hover text-brand-dark font-extrabold py-3.5 sm:py-3 px-8 rounded-xl text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer w-full sm:w-auto shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
           >
-            <Save className="w-4 h-4" />
+            <Save className="w-5 h-5" />
             Simpan Semua Perubahan
           </button>
         </div>
