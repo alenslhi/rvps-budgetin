@@ -489,29 +489,25 @@ export default function ManageCapsules({
         })}
       </div>
 
-      {/* Floating Save Actions Bar - Melayang mengikuti scroll dengan sticky */}
-      <div className="sticky bottom-20 md:bottom-8 z-40 mt-8">
-        <div className="w-full md:w-[600px] mx-auto p-4 bg-card-bg/95 backdrop-blur-xl border border-brand-border shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] rounded-2xl">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-red-500 text-xs font-bold text-center sm:text-left">
-              {hasLimitError && (
-                <>
-                  <AlertTriangle className="w-5 h-5 shrink-0 mx-auto sm:mx-0" />
-                  <span>Alokasi sekat melebihi limit Kapsul Utama!</span>
-                </>
-              )}
-            </div>
-            
-            <button
-              onClick={handleSaveBulk}
-              disabled={loading || hasLimitError || (Object.keys(editedCategories).length === 0 && Object.keys(editedSubcategories).length === 0)}
-              className="bg-brand-primary hover:bg-brand-hover text-brand-dark font-extrabold py-3.5 sm:py-3 px-8 rounded-xl text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer w-full sm:w-auto shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <Save className="w-5 h-5" />
-              Simpan Semua Perubahan
-            </button>
+      {/* Floating Save Button - Melayang murni di pojok kanan bawah */}
+      <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-[99999] flex flex-col items-end gap-3 pointer-events-none">
+        {/* Error Tooltip */}
+        {hasLimitError && (
+          <div className="bg-red-500 text-white px-4 py-2.5 rounded-xl shadow-xl text-xs font-bold flex items-center gap-2 pointer-events-auto max-w-[250px] animate-bounce">
+            <AlertTriangle className="w-5 h-5 shrink-0" />
+            <span>Alokasi sekat melebihi limit! Perbaiki sebelum menyimpan.</span>
           </div>
-        </div>
+        )}
+        
+        {/* FAB Button */}
+        <button
+          onClick={handleSaveBulk}
+          disabled={loading || hasLimitError || (Object.keys(editedCategories).length === 0 && Object.keys(editedSubcategories).length === 0)}
+          className="bg-brand-primary hover:bg-brand-hover text-brand-dark font-extrabold py-3.5 px-6 rounded-full text-sm transition-all flex items-center justify-center gap-2.5 shadow-2xl hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 cursor-pointer pointer-events-auto"
+        >
+          <Save className="w-5 h-5" />
+          <span>Simpan Perubahan</span>
+        </button>
       </div>
     </div>
   );
